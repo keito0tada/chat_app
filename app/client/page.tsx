@@ -13,6 +13,10 @@ export default function Page() {
 
   useEffect(() => {
     const getData = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      console.log(`user ${user}`);
       const { data, error } = await supabase.from('todo').select();
       console.log(`unko ${error}`);
       setTodos(data);
