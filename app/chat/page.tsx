@@ -46,7 +46,7 @@ export default function Page() {
                 required
             />
             <button
-                className="rounded-md px-10 py-2 bg-blue-500 hover:bg-blue-400 text-white"
+                className="rounded-md px-10 py-2 bg-purple-500 hover:bg-purple-400 text-white"
                 onClick={async (e) => {
                     setContent('');
                     if (authorId !== undefined) {
