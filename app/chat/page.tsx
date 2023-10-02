@@ -1,15 +1,21 @@
 'use client';
 
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
-import { use, useEffect, useState } from 'react';
+import {
+    User,
+    createClientComponentClient,
+} from '@supabase/auth-helpers-nextjs';
+import { useEffect, useState } from 'react';
 
 import { Database } from '@/database.types';
+import MessageField from '@/components/chat/MessageField';
+import ChatHeader from '@/components/chat/Header';
 
 type Message = Database['public']['Tables']['messages']['Row'];
 
 export default function Page() {
     const [messages, setMessages] = useState<Message[] | null>(null);
     const [authorId, setAuthorID] = useState<string | undefined>(undefined);
+    const [user, setUser] = useState<User | null>(null);
     const [content, setContent] = useState<string>('');
     const supabase = createClientComponentClient<Database>();
     useEffect(() => {
@@ -19,22 +25,19 @@ export default function Page() {
             const {
                 data: { user },
             } = await supabase.auth.getUser();
+            setUser(user);
             setAuthorID(user?.id);
         };
         getData();
     }, []);
-    console.log(`user id ${authorId}`);
-    console.log(`content ${content}`);
     return (
         <>
-            <p className="text-white">aaaaa</p>
-            {messages?.map((value, index) => {
-                return (
-                    <p className="text-white" key={index}>
-                        {value.content}
-                    </p>
-                );
-            })}
+            <ChatHeader user={user} />
+            <div className="w-1/2 bg-slate-100">
+                {messages?.map((value, index) => {
+                    return <MessageField message={value} key={index} />;
+                })}
+            </div>
             <input
                 type="text"
                 id="content"
@@ -43,7 +46,7 @@ export default function Page() {
                 required
             />
             <button
-                className="bg-blue-500 text-white"
+                className="rounded-md px-10 py-2 bg-blue-500 hover:bg-blue-400 text-white"
                 onClick={async (e) => {
                     setContent('');
                     if (authorId !== undefined) {
