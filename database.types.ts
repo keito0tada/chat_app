@@ -9,6 +9,42 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
+      channels: {
+        Row: {
+          created_at: string
+          id: string
+          name: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string | null
+        }
+        Relationships: []
+      }
+      guilds: {
+        Row: {
+          created_at: string
+          id: string
+          name: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string | null
+        }
+        Relationships: []
+      }
       messages: {
         Row: {
           author_id: string | null
@@ -30,23 +66,30 @@ export interface Database {
         }
         Relationships: []
       }
-      todo: {
+      profiles: {
         Row: {
-          content: string | null
-          created_at: string
-          id: number
+          id: string
+          name: string | null
+          updated_at: string
         }
         Insert: {
-          content?: string | null
-          created_at?: string
-          id?: number
+          id: string
+          name?: string | null
+          updated_at?: string
         }
         Update: {
-          content?: string | null
-          created_at?: string
-          id?: number
+          id?: string
+          name?: string | null
+          updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "profiles_id_fkey"
+            columns: ["id"]
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
       }
     }
     Views: {

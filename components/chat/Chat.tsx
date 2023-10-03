@@ -1,38 +1,43 @@
 'use client';
-
 import {
     User,
     createClientComponentClient,
 } from '@supabase/auth-helpers-nextjs';
-import { useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 
 import { Database } from '@/database.types';
 import MessageField from '@/components/chat/MessageField';
-import ChatHeader from '@/components/chat/Header';
+import ChatHeader from '@/components/chat/ChatHeader';
+import { Frame, Profile } from '@/app/page';
 
 type Message = Database['public']['Tables']['messages']['Row'];
 
-export default function Page() {
+export default function Chat({
+    user,
+    profile,
+    setFrame,
+}: {
+    user: User;
+    profile: Profile;
+    setFrame: Dispatch<SetStateAction<Frame>>;
+}) {
     const [messages, setMessages] = useState<Message[] | null>(null);
     const [authorId, setAuthorID] = useState<string | undefined>(undefined);
-    const [user, setUser] = useState<User | null>(null);
     const [content, setContent] = useState<string>('');
     const supabase = createClientComponentClient<Database>();
     useEffect(() => {
-        const getData = async () => {
+        const getMessages = async () => {
             const { data, error } = await supabase.from('messages').select();
             setMessages(data);
-            const {
-                data: { user },
-            } = await supabase.auth.getUser();
-            setUser(user);
-            setAuthorID(user?.id);
         };
-        getData();
+        getMessages();
     }, []);
     return (
         <>
-            <ChatHeader user={user} />
+            <ChatHeader
+                handleName={profile?.name ?? 'null'}
+                setFrame={setFrame}
+            />
             <div className="w-1/2 bg-slate-100">
                 {messages?.map((value, index) => {
                     return <MessageField message={value} key={index} />;

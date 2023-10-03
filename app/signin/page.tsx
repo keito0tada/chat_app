@@ -16,7 +16,7 @@ export default function SignIn() {
             email,
             password,
         });
-        router.push('/chat');
+        router.push('/');
     };
 
     return (
