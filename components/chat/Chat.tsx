@@ -15,11 +15,9 @@ type Message = Database['public']['Tables']['messages']['Row'];
 export default function Chat({
     user,
     profile,
-    setFrame,
 }: {
-    user: User;
-    profile: Profile;
-    setFrame: Dispatch<SetStateAction<Frame>>;
+    user: User | null;
+    profile: Profile | null;
 }) {
     const [messages, setMessages] = useState<Message[] | null>(null);
     const [authorId, setAuthorID] = useState<string | undefined>(undefined);
@@ -33,11 +31,7 @@ export default function Chat({
         getMessages();
     }, []);
     return (
-        <>
-            <ChatHeader
-                handleName={profile?.name ?? 'null'}
-                setFrame={setFrame}
-            />
+        <div className="flex flex-col flex-initial bg-red-100">
             <div className="w-1/2 bg-slate-100">
                 {messages?.map((value, index) => {
                     return <MessageField message={value} key={index} />;
@@ -65,6 +59,6 @@ export default function Chat({
             >
                 送信
             </button>
-        </>
+        </div>
     );
 }

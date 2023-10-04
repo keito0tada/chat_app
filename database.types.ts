@@ -48,18 +48,21 @@ export interface Database {
       messages: {
         Row: {
           author_id: string | null
+          channel_id: string | null
           content: string | null
           created_at: string
           id: number
         }
         Insert: {
           author_id?: string | null
+          channel_id?: string | null
           content?: string | null
           created_at?: string
           id?: number
         }
         Update: {
           author_id?: string | null
+          channel_id?: string | null
           content?: string | null
           created_at?: string
           id?: number
