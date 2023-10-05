@@ -8,6 +8,7 @@ import {
     User,
     createClientComponentClient,
 } from '@supabase/auth-helpers-nextjs';
+import { channel } from 'diagnostics_channel';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
@@ -31,7 +32,7 @@ export default function Page({
     );
     const [guilds, setGuilds] = useState<Guild[] | null>(null);
     const [channels, setChannels] = useState<Channel[] | null>(null);
-    const [messages, setMessages] = useState<Message[] | null>(null);
+    const [profiles, setProfiles] = useState<Profile[] | null>(null);
     const router = useRouter();
     const supabase = createClientComponentClient<Database>();
 
@@ -84,16 +85,6 @@ export default function Page({
             setActiveChannel(
                 channelsData.find((value) => value.guild_id === guild_id)
             );
-            //fetch messages
-            const { data: messageData, error: fetchMessagesError } =
-                await supabase
-                    .from('messages')
-                    .select()
-                    .eq('channel_id', channel_id);
-            if (messageData === null) {
-                return;
-            }
-            setMessages(messageData);
         };
         getData();
     }, []);

@@ -12,6 +12,7 @@ export default function SettingMenu() {
     };
     return (
         <div className="flex flex-col w-32 h-full px-1 py-1">
+            <Link href="/chat">戻る</Link>
             <div className="grow flex flex-col bg-green-100">
                 <Link href="/setting/profile">プロフィール</Link>
                 <Link href={'/setting/notification'}>通知</Link>
