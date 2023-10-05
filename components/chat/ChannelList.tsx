@@ -1,19 +1,24 @@
 import { Database } from '@/database.types';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
 type Channel = Database['public']['Tables']['channels']['Row'];
 export default function ChannelList({
-    guild_id,
     channels,
 }: {
-    guild_id: string | null;
     channels: Channel[] | null;
 }) {
     return (
-        <div className="flex-none bg-purple-100">
-            <label>{guild_id}</label>
+        <div className="flex-none w-32 mr-1 bg-purple-100">
             {channels?.map((value, index) => {
-                return <div key={index}>{value.name}</div>;
+                return (
+                    <Link
+                        href={`/chat/${value.guild_id}/${value.id}`}
+                        key={index}
+                    >
+                        {value.name}
+                    </Link>
+                );
             })}
         </div>
     );

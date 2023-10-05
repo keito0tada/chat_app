@@ -12,18 +12,21 @@ export interface Database {
       channels: {
         Row: {
           created_at: string
+          guild_id: string
           id: string
-          name: string | null
+          name: string
         }
         Insert: {
           created_at?: string
+          guild_id: string
           id?: string
-          name?: string | null
+          name?: string
         }
         Update: {
           created_at?: string
+          guild_id?: string
           id?: string
-          name?: string | null
+          name?: string
         }
         Relationships: []
       }
@@ -31,39 +34,39 @@ export interface Database {
         Row: {
           created_at: string
           id: string
-          name: string | null
+          name: string
         }
         Insert: {
           created_at?: string
           id?: string
-          name?: string | null
+          name?: string
         }
         Update: {
           created_at?: string
           id?: string
-          name?: string | null
+          name?: string
         }
         Relationships: []
       }
       messages: {
         Row: {
-          author_id: string | null
-          channel_id: string | null
-          content: string | null
+          author_id: string
+          channel_id: string
+          content: string
           created_at: string
           id: number
         }
         Insert: {
-          author_id?: string | null
-          channel_id?: string | null
-          content?: string | null
+          author_id?: string
+          channel_id: string
+          content?: string
           created_at?: string
           id?: number
         }
         Update: {
-          author_id?: string | null
-          channel_id?: string | null
-          content?: string | null
+          author_id?: string
+          channel_id?: string
+          content?: string
           created_at?: string
           id?: number
         }
@@ -72,17 +75,17 @@ export interface Database {
       profiles: {
         Row: {
           id: string
-          name: string | null
+          name: string
           updated_at: string
         }
         Insert: {
           id: string
-          name?: string | null
+          name?: string
           updated_at?: string
         }
         Update: {
           id?: string
-          name?: string | null
+          name?: string
           updated_at?: string
         }
         Relationships: [
