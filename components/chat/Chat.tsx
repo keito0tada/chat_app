@@ -79,10 +79,51 @@ export default function Chat({
         handleInsertMessages();
     }, []);
     return (
+        <div className="flex flex-col-reverse grow mr-1 px-1 py-1 bg-red-100">
+            <div className="flex flex-none self-center mb-1 w-full h-8 bg-green-100">
+                <input
+                    className="flex-1 rounded-md px-1 border-2 border-slate-300"
+                    type="text"
+                    id="content"
+                    value={content}
+                    onChange={(e) => setContent(e.target.value)}
+                    required
+                />
+                <button
+                    className="flex-none rounded-md w-16 h-full bg-purple-500 hover:bg-purple-400 text-white"
+                    onClick={async (e) => {
+                        setContent('');
+                        if (profile !== null && channel !== undefined) {
+                            const { data, error } = await supabase
+                                .from('messages')
+                                .insert({
+                                    channel_id: channel.id,
+                                    content: content,
+                                    author_id: profile.id,
+                                });
+                        }
+                    }}
+                >
+                    送信
+                </button>
+            </div>
+            <div className="flex-none bg-purple-100 overflow-y-scroll ">
+                {profile !== null &&
+                    messages?.map((value, index) => {
+                        return (
+                            <MessageField
+                                profile={profile}
+                                message={value}
+                                key={index}
+                            />
+                        );
+                    })}
+            </div>
+            {/*
         <div className="flex-1 bg-red-100 px-1 py-1">
             <div className="flex flex-col w-full h-full bg-blue-100">
                 <div className="min-w-0 self-center w-full overflow-hidden">
-                    <div className="overflow-x-scroll">
+                    <div className="overflow-y-scroll">
                         {profile !== null &&
                             messages?.map((value, index) => {
                                 return (
@@ -126,6 +167,7 @@ export default function Chat({
                     </button>
                 </div>
             </div>
+                    </div>*/}
         </div>
     );
 }
