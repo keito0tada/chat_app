@@ -177,12 +177,12 @@ export default function ChatLayout({
             console.log(guild_id);
             console.log(channel_id);
             if (guild_id === undefined) {
-                router.push('/chat2');
+                router.push('/chat');
             } else {
                 if (channel_id === undefined) {
-                    router.push(`/chat2/${guild_id}`);
+                    router.push(`/chat/${guild_id}`);
                 } else {
-                    router.push(`/chat2/${guild_id}/${channel_id}`);
+                    router.push(`/chat/${guild_id}/${channel_id}`);
                 }
             }
         };

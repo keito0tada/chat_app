@@ -16,7 +16,7 @@ export default function ChannelList({
                         className="rounded-md hover:bg-purple-200 text-center hover:underline"
                         key={index}
                     >
-                        <Link href={`/chat2/${value.guild_id}/${value.id}`}>
+                        <Link href={`/chat/${value.guild_id}/${value.id}`}>
                             {value.name}
                         </Link>
                     </div>
