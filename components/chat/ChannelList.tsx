@@ -12,11 +12,11 @@ export default function ChannelList({
         <div className="flex-none w-32 mr-1 bg-purple-100">
             {channels?.map((value, index) => {
                 return (
-                    <div className="rounded-md hover:bg-purple-200 text-center hover:underline">
-                        <Link
-                            href={`/chat2/${value.guild_id}/${value.id}`}
-                            key={index}
-                        >
+                    <div
+                        className="rounded-md hover:bg-purple-200 text-center hover:underline"
+                        key={index}
+                    >
+                        <Link href={`/chat2/${value.guild_id}/${value.id}`}>
                             {value.name}
                         </Link>
                     </div>
