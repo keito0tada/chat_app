@@ -89,9 +89,9 @@ export default function Page({
         getData();
     }, []);
     return (
-        <div className="flex flex-col w-screen h-screen bg-green-100">
+        <div className="box-border flex flex-col w-screen h-screen bg-green-100">
             <ChatHeader profile={profile} />
-            <div className="flex justify-start w-full flex-auto">
+            <div className="box-border flex justify-start w-full flex-auto">
                 <GuildList guilds={guilds} />
                 <ChannelList channels={channels} />
                 <Chat profile={profile} channel={activeChannel} />
