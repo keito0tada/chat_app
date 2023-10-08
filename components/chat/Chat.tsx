@@ -47,7 +47,7 @@ export default function Chat({
                                           channel_id,
                                       },
                                   ]
-                                : message.concat([
+                                : [
                                       {
                                           id,
                                           created_at,
@@ -55,7 +55,7 @@ export default function Chat({
                                           content,
                                           channel_id,
                                       },
-                                  ])
+                                  ].concat(message)
                         );
                     }
                 )
@@ -71,7 +71,8 @@ export default function Chat({
             const { data, error } = await supabase
                 .from('messages')
                 .select()
-                .eq('channel_id', channel.id);
+                .eq('channel_id', channel.id)
+                .order('created_at', { ascending: false });
             setMessages(data);
         };
         getMessages();
