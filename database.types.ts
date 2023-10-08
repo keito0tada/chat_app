@@ -9,6 +9,34 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
+      channel_users: {
+        Row: {
+          channel_id: string
+          user_id: string
+        }
+        Insert: {
+          channel_id: string
+          user_id: string
+        }
+        Update: {
+          channel_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "channel_users_channel_id_fkey"
+            columns: ["channel_id"]
+            referencedRelation: "channels"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "channel_users_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       channels: {
         Row: {
           created_at: string
@@ -29,6 +57,62 @@ export interface Database {
           name?: string
         }
         Relationships: []
+      }
+      guild_channels: {
+        Row: {
+          channel_id: string
+          guild_id: string
+        }
+        Insert: {
+          channel_id: string
+          guild_id: string
+        }
+        Update: {
+          channel_id?: string
+          guild_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "guild_channels_channel_id_fkey"
+            columns: ["channel_id"]
+            referencedRelation: "channels"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "guild_channels_guild_id_fkey"
+            columns: ["guild_id"]
+            referencedRelation: "guilds"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      guild_users: {
+        Row: {
+          guild_id: string
+          user_id: string
+        }
+        Insert: {
+          guild_id: string
+          user_id: string
+        }
+        Update: {
+          guild_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "guild_users_guild_id_fkey"
+            columns: ["guild_id"]
+            referencedRelation: "guilds"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "guild_users_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
       }
       guilds: {
         Row: {
