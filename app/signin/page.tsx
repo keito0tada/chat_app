@@ -24,14 +24,14 @@ export default function SignIn() {
             <label className="mx-auto mt-5">Sign In</label>
             <div className="flex flex-col w-full my-5">
                 <input
-                    className="mx-5 rounded-md"
+                    className="mx-5 rounded-md px-1"
                     placeholder="email"
                     name="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                 ></input>
                 <input
-                    className="mx-5 rounded-md mt-2"
+                    className="mx-5 rounded-md px-1 mt-2"
                     type="password"
                     name="password"
                     placeholder="password"
