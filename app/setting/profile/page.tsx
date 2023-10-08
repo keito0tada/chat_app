@@ -42,7 +42,7 @@ export default function Page() {
             <SettingMenu />
             <div className="flex flex-col flex-1 bg-blue-100">
                 <label className="text-xl">プロフィール</label>
-                <label>{profile?.id}</label>
+                <label>・ユーザーネーム</label>
                 <input
                     placeholder="ユーザー名"
                     type="text"

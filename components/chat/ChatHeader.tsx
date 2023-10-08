@@ -9,7 +9,7 @@ export default function ChatHeader({
 }) {
     return (
         <header>
-            <div className="flex justify-end w-screen h-8 bg-slate-700">
+            <div className="flex justify-end w-screen h-8 px-2 bg-slate-700">
                 <nav>
                     <Link
                         className="text-slate-200 hover:text-slate-300"
