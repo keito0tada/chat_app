@@ -16,7 +16,7 @@ export default function MessageField({
                 {profile.name}
             </label>
             <label className="pl-8 text-black">{message.content}</label>
-            <label className="text-center">
+            <label className="text-right">
                 {new Date(message.created_at).toLocaleString()}
             </label>
         </div>

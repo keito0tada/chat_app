@@ -18,7 +18,7 @@ export default function Chat({
     profile,
     channel,
 }: {
-    profile: Profile | null;
+    profile: Profile | undefined;
     channel: Channel | undefined;
 }) {
     const [messages, setMessages] = useState<Message[] | null>(null);
@@ -72,7 +72,11 @@ export default function Chat({
     };
     useEffect(() => {
         const getMessages = async () => {
-            const { data, error } = await supabase.from('messages').select();
+            if (profile === undefined || channel === undefined) return;
+            const { data, error } = await supabase
+                .from('messages')
+                .select()
+                .eq('channel_id', channel.id);
             setMessages(data);
         };
         getMessages();
@@ -81,7 +85,7 @@ export default function Chat({
     return (
         <div className="box-border flex-auto mr-1 bg-red-100">
             <div className="flex flex-col-reverse w-full h-[calc(100vh-4rem)] max-h-[calc(100vh-4rem)] bg-slate-200 overflow-y-scroll">
-                {profile !== null &&
+                {profile !== undefined &&
                     messages?.map((value, index) => {
                         return (
                             <MessageField
@@ -105,7 +109,7 @@ export default function Chat({
                     className="flex-none rounded-md w-16 h-full bg-purple-500 hover:bg-purple-400 text-white"
                     onClick={async (e) => {
                         setContent('');
-                        if (profile !== null && channel !== undefined) {
+                        if (profile !== undefined && channel !== undefined) {
                             const { data, error } = await supabase
                                 .from('messages')
                                 .insert({
