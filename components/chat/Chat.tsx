@@ -1,9 +1,10 @@
 'use client';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 
 import { Database } from '@/database.types';
 import MessageField from '@/components/chat/MessageField';
+import { memberProfilesContext, userProfileContext } from '@/app/chat/layout';
 
 type Message = Database['public']['Tables']['messages']['Row'];
 type Profile = Database['public']['Tables']['profiles']['Row'];
@@ -18,6 +19,7 @@ export default function Chat({
 }) {
     const [messages, setMessages] = useState<Message[] | null>(null);
     const [content, setContent] = useState<string>('');
+    const memberProfiles = useContext(memberProfilesContext);
     const supabase = createClientComponentClient<Database>();
     const handleInsertMessages = () => {
         try {
@@ -81,11 +83,13 @@ export default function Chat({
     return (
         <div className="box-border flex-auto mr-1 bg-red-100">
             <div className="flex flex-col-reverse w-full h-[calc(100vh-4rem)] max-h-[calc(100vh-4rem)] bg-slate-200 overflow-y-scroll">
-                {profile !== undefined &&
+                {memberProfiles !== null &&
                     messages?.map((value, index) => {
                         return (
                             <MessageField
-                                profile={profile}
+                                profile={memberProfiles.find(
+                                    (value2) => value2.id === value.author_id
+                                )}
                                 message={value}
                                 key={index}
                             />
