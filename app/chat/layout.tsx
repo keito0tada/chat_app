@@ -11,11 +11,9 @@ import { useState, useEffect } from 'react';
 import { createContext } from 'react';
 
 type Profile = Database['public']['Tables']['profiles']['Row'];
-type Channel = Database['public']['Tables']['channels']['Row'];
 type Guild = Database['public']['Tables']['guilds']['Row'];
 
 export const guildsContext = createContext<Guild[] | null>(null);
-export const channelsContext = createContext<Channel[] | null>(null);
 export const memberProfilesContext = createContext<Profile[] | null>(null);
 export const userProfileContext = createContext<Profile | undefined>(undefined);
 
@@ -28,12 +26,10 @@ export default function ChatLayout({
     const [userProfile, setUserProfile] = useState<Profile | undefined>(
         undefined
     );
-    const [activeChannel, setActiveChannel] = useState<Channel | null>(null);
     const [activeGuild, setActiveGuild] = useState<Guild | null>(null);
     const [memberProfiles, setMemberProfiles] = useState<Profile[] | null>(
         null
     );
-    const [channels, setChannels] = useState<Channel[] | null>(null);
     const [guilds, setGuilds] = useState<Guild[] | null>(null);
     const router = useRouter();
     const supabase = createClientComponentClient<Database>();
@@ -41,7 +37,6 @@ export default function ChatLayout({
     useEffect(() => {
         const getData = async () => {
             let guild_id: string | undefined = undefined;
-            let channel_id: string | undefined = undefined;
             //fetch auth
             const {
                 data: { user: userData },
@@ -94,6 +89,7 @@ export default function ChatLayout({
             } else {
                 setActiveGuild(null);
                 guild_id = undefined;
+                router.push('/chat');
                 return;
             }
             //fetch member profiles on guilds
@@ -125,83 +121,21 @@ export default function ChatLayout({
             setUserProfile(
                 profilesData.find((value) => value.id === userData.id)
             );
-            //fetch channel ids accessible to user
-            const {
-                data: accessibleChannelIdsData,
-                error: fetchAccessibleGuildIdsError,
-            } = await supabase
-                .from('channel_users')
-                .select()
-                .eq('user_id', userData.id);
-            if (
-                accessibleChannelIdsData === null ||
-                fetchAccessibleGuildIdsError !== null
-            ) {
-                router.push('/signin');
-                return;
-            }
-            //fetch channels accessible to user
-            const { data: channelsData, error: fetchChannelsError } =
-                await supabase
-                    .from('channels')
-                    .select()
-                    .eq('guild_id', guild_id)
-                    .in(
-                        'id',
-                        accessibleChannelIdsData.map(
-                            (value) => value.channel_id
-                        )
-                    );
-            if (channelsData === null || fetchChannelsError !== null) {
-                router.push('/signin');
-                return;
-            }
-            setChannels(channelsData);
-            if (channelsData.length > 0) {
-                if (
-                    activeChannel === null ||
-                    channelsData.find(
-                        (value) => value.id === activeChannel.id
-                    ) === undefined
-                ) {
-                    setActiveChannel(channelsData[0]);
-                    channel_id = channelsData[0].id;
-                } else {
-                    channel_id = activeChannel.id;
-                }
-            } else {
-                setActiveChannel(null);
-                channel_id = undefined;
-                return;
-            }
-            console.log(guild_id);
-            console.log(channel_id);
-            if (guild_id === undefined) {
-                router.push('/chat');
-            } else {
-                if (channel_id === undefined) {
-                    router.push(`/chat/${guild_id}`);
-                } else {
-                    router.push(`/chat/${guild_id}/${channel_id}`);
-                }
-            }
+            router.push(`/chat/${guild_id}`);
         };
         getData();
-    }, [activeChannel, activeGuild]);
+    }, [activeGuild]);
     return (
         <div>
             <ChatHeader profile={userProfile} />
             <div className="flex">
                 <GuildList guilds={guilds} setActiveGuild={setActiveGuild} />
-                <ChannelList channels={channels} />
                 <guildsContext.Provider value={guilds}>
-                    <channelsContext.Provider value={channels}>
-                        <memberProfilesContext.Provider value={memberProfiles}>
-                            <userProfileContext.Provider value={userProfile}>
-                                {children}
-                            </userProfileContext.Provider>
-                        </memberProfilesContext.Provider>
-                    </channelsContext.Provider>
+                    <memberProfilesContext.Provider value={memberProfiles}>
+                        <userProfileContext.Provider value={userProfile}>
+                            {children}
+                        </userProfileContext.Provider>
+                    </memberProfilesContext.Provider>
                 </guildsContext.Provider>
             </div>
         </div>

@@ -1,7 +1,8 @@
 'use client';
 import Chat from '@/components/chat/Chat';
 import { useContext } from 'react';
-import { channelsContext, userProfileContext } from '../../layout';
+import { userProfileContext } from '../../layout';
+import { channelsContext } from '../layout';
 
 export default function Page({
     params: { guild_id, channel_id },
