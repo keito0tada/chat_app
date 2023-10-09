@@ -4,5 +4,7 @@ import { guildsContext } from '../layout';
 export default function Page() {
     const guilds = useContext(guildsContext);
 
-    return <label>{guilds?.[0]?.name}</label>;
+    return (
+        <label>チャンネルが存在しません。チャンネルを作ってみましょう。</label>
+    );
 }

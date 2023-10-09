@@ -3,6 +3,7 @@
 import ChannelList from '@/components/chat/ChannelList';
 import ChatHeader from '@/components/chat/ChatHeader';
 import GuildList from '@/components/chat/GuildList';
+import MemberList from '@/components/chat/MemberList';
 import { Database } from '@/database.types';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { User } from '@supabase/supabase-js';
@@ -15,6 +16,7 @@ type Guild = Database['public']['Tables']['guilds']['Row'];
 
 export const guildsContext = createContext<Guild[] | null>(null);
 export const memberProfilesContext = createContext<Profile[] | null>(null);
+export const activeGuildContext = createContext<Guild | null>(null);
 export const userProfileContext = createContext<Profile | undefined>(undefined);
 
 export default function ChatLayout({
@@ -33,6 +35,39 @@ export default function ChatLayout({
     const [guilds, setGuilds] = useState<Guild[] | null>(null);
     const router = useRouter();
     const supabase = createClientComponentClient<Database>();
+
+    const handleInsertGuild = () => {
+        try {
+            supabase
+                .channel('insertGuild')
+                .on(
+                    'postgres_changes',
+                    { event: 'INSERT', schema: 'public', table: 'guilds' },
+                    (payload) => {
+                        const { created_at, id, name } = payload.new;
+                        setGuilds((value) =>
+                            value === null
+                                ? [{ created_at, id, name }]
+                                : value.concat([{ created_at, id, name }])
+                        );
+                    }
+                )
+                .subscribe();
+            return () => supabase.channel('insertGuild').unsubscribe();
+        } catch (error) {}
+    };
+    const handleDeleteGuild = () => {
+        try {
+            supabase
+                .channel('deleteGuild')
+                .on(
+                    'postgres_changes',
+                    { event: 'DELETE', schema: 'public', table: 'guilds' },
+                    (payload) => {}
+                )
+                .subscribe();
+        } catch (error) {}
+    };
 
     useEffect(() => {
         const getData = async () => {
@@ -126,17 +161,24 @@ export default function ChatLayout({
         getData();
     }, [activeGuild]);
     return (
-        <div>
+        <div className="flex flex-col h-screen">
             <ChatHeader profile={userProfile} />
-            <div className="flex">
-                <GuildList guilds={guilds} setActiveGuild={setActiveGuild} />
+            <div className="flex flex-auto">
+                <GuildList
+                    guilds={guilds}
+                    activeGuild={activeGuild}
+                    setActiveGuild={setActiveGuild}
+                />
                 <guildsContext.Provider value={guilds}>
                     <memberProfilesContext.Provider value={memberProfiles}>
-                        <userProfileContext.Provider value={userProfile}>
-                            {children}
-                        </userProfileContext.Provider>
+                        <activeGuildContext.Provider value={activeGuild}>
+                            <userProfileContext.Provider value={userProfile}>
+                                {children}
+                            </userProfileContext.Provider>
+                        </activeGuildContext.Provider>
                     </memberProfilesContext.Provider>
                 </guildsContext.Provider>
+                <MemberList profiles={memberProfiles} />
             </div>
         </div>
     );

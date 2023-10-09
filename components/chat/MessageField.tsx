@@ -3,6 +3,11 @@ import { Database } from '@/database.types';
 type Message = Database['public']['Tables']['messages']['Row'];
 type Profile = Database['public']['Tables']['profiles']['Row'];
 
+function toMessageTimestamp(timestamp: string) {
+    const date = new Date(timestamp);
+    return `${date.getFullYear()}/${date.getMonth()}/${date.getDate()} ${date.getHours()}:${date.getMinutes()}`;
+}
+
 export default function MessageField({
     profile,
     message,
@@ -17,7 +22,7 @@ export default function MessageField({
             </label>
             <label className="pl-8 text-black">{message.content}</label>
             <label className="text-right">
-                {new Date(message.created_at).toLocaleString()}
+                {toMessageTimestamp(message.created_at)}
             </label>
         </div>
     );
