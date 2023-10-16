@@ -21,6 +21,29 @@ export default function Chat({
     const [content, setContent] = useState<string>('');
     const memberProfiles = useContext(memberProfilesContext);
     const supabase = createClientComponentClient<Database>();
+
+    const sendMessage = async () => {
+        console.log('call');
+        console.log(content);
+        if (content === '') {
+            return;
+        }
+        console.log('call2');
+        setContent('');
+        if (profile !== undefined && channel !== undefined) {
+            const { data, error } = await supabase.from('messages').insert({
+                channel_id: channel.id,
+                content: content,
+                author_id: profile.id,
+            });
+        }
+    };
+    const handleSendKeyDown = async (event: KeyboardEvent) => {
+        console.log(event.key);
+        if (event.ctrlKey && event.key === 'Enter') {
+            await sendMessage();
+        }
+    };
     const handleInsertMessages = () => {
         try {
             supabase
@@ -79,7 +102,11 @@ export default function Chat({
         };
         getMessages();
         handleInsertMessages();
-    }, []);
+        document.addEventListener('keydown', handleSendKeyDown, false);
+        return () => {
+            document.removeEventListener('keydown', handleSendKeyDown, false);
+        };
+    }, [content]);
     return (
         <div className="box-border flex-auto mr-1 bg-red-100">
             <div className="flex flex-col-reverse w-full h-[calc(100vh-4rem)] max-h-[calc(100vh-4rem)] bg-slate-200 overflow-y-scroll">
