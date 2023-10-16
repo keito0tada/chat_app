@@ -102,6 +102,8 @@ export default function Chat({
         };
         getMessages();
         handleInsertMessages();
+    }, []);
+    useEffect(() => {
         document.addEventListener('keydown', handleSendKeyDown, false);
         return () => {
             document.removeEventListener('keydown', handleSendKeyDown, false);
@@ -135,16 +137,7 @@ export default function Chat({
                 <button
                     className="flex-none rounded-md w-16 h-full bg-purple-500 hover:bg-purple-400 text-white"
                     onClick={async (e) => {
-                        setContent('');
-                        if (profile !== undefined && channel !== undefined) {
-                            const { data, error } = await supabase
-                                .from('messages')
-                                .insert({
-                                    channel_id: channel.id,
-                                    content: content,
-                                    author_id: profile.id,
-                                });
-                        }
+                        sendMessage();
                     }}
                 >
                     送信
